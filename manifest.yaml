@@ -1,28 +1,94 @@
-variables:
-  stream: testing-devel
-  prod: false
-
-releasever: 36
-
+include: kde-desktop-pkgs.yaml
+ref: fedora/36/${basearch}/kinoite
+rojig:
+  name: fedora-kde
+  summary: "Fedora Kinoite (KDE) base image"
+  license: MIT
 packages:
-- hdparm
-- crio
-- make
-- buildah
-- ipvsadm
-- kubeadm
-- kubectl
-- kubelet
-- wget
-- zsh
+  - fedora-release-kinoite
+  # Wayland support
+  - kwayland-integration
+  - kwin-wayland
+  - plasma-workspace-wayland
+  - xorg-x11-server-Xwayland
+  # Portals for Flatpak
+  - xdg-desktop-portal-kde
+  # Provide an archive manager by default
+  - ark
+  # Keep some basic apps installed until we have Flatpaks available
+  # See https://pagure.io/fedora-kde/SIG/issue/13
+  - gwenview
+  - kcalc
+  - kwrite
+  - quassel
+  - amarok
+  - zsh
+  - tilix
+  - mc
+  - python-twisted
+  - vivaldi-stable
+  - slack
+  - ansible
+  - wireguard-tools
+  - nmap
+  - restic
+  - gawk 
+  - make
+  - wget
+  - tar
+  - bzip2
+  - gzip
+  - python3
+  - unzip
+  - perl
+  - patch
+  - diffutils
+  - diffstat
+  - git
+  - cpp
+  - gcc
+  - gcc-c++
+  - glibc-devel
+  - texinfo
+  - chrpath
+  - ccache
+  - perl-Data-Dumper
+  - perl-Text-ParseWords
+  - perl-Thread-Queue
+  - perl-bignum
+  - socat
+  - python3-pexpect
+  - findutils
+  - which
+  - file
+  - cpio
+  - python
+  - python3-pip
+  - xz
+  - python3-GitPython
+  -  python3-jinja2
+  - SDL-devel
+  - xterm
+  - rpcgen
+  - lz4
+  - zstd
+  - moby-engine
+  - docker-compose
+
+# Make sure the following are not pulled in when Recommended by other packages
+exclude-packages:
+  - plasma-discover-offline-updates
+  - plasma-discover-packagekit
+  # Exclude currently broken support for rpm-ostree in Discover
+  - plasma-discover-rpm-ostree
+  - plasma-pk-updates
 
 repos:
-  # These repos are there to make it easier to add new packages to the OS and to
-  # use `cosa fetch --update-lockfile`; but note that all package versions are
-  # still pinned. These repos are also used by the remove-graduated-overrides
-  # GitHub Action.
-  - fedora
-  - fedora-updates
-  - kubernetes
-
-include: manifests/fedora-coreos.yaml
+  - fedora-36
+  - fedora-36-updates
+  - vivaldi
+  - rpmfusion-free
+  - rpmfusion-free-updates
+  - rpmfusion-nonfree
+  - rpmfusion-nonfree-updates
+  - slack
