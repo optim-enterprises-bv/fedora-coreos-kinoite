@@ -1,0 +1,18 @@
+{
+  "ignition": {
+    "version": "3.2.0"
+  },
+  "passwd": {
+    "users": [
+      {
+        "groups": [
+          "sudo"
+        ],
+        "name": "core",
+        "sshAuthorizedKeys": [
+          "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJjHgBqOxaPgvAimK3CQTAs0Oal6AV1JXqo1RrBd6jgtRvjYEbbSUYgPypL+NzPdlNXnXMDZQjiskDMuUNIQDdo= dingo@misery.optimcloud.com"
+        ]
+      }
+    ]
+  }
+}

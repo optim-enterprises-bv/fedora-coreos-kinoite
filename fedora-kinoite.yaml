@@ -1,0 +1,94 @@
+include: kde-desktop-pkgs.yaml
+ref: fedora/35/${basearch}/kinoite
+rojig:
+  name: fedora-kde
+  summary: "Fedora Kinoite (KDE) base image"
+  license: MIT
+packages:
+  - fedora-release-kinoite
+  # Wayland support
+  - kwayland-integration
+  - kwin-wayland
+  - plasma-workspace-wayland
+  - xorg-x11-server-Xwayland
+  # Portals for Flatpak
+  - xdg-desktop-portal-kde
+  # Provide an archive manager by default
+  - ark
+  # Keep some basic apps installed until we have Flatpaks available
+  # See https://pagure.io/fedora-kde/SIG/issue/13
+  - gwenview
+  - kcalc
+  - kwrite
+  - quassel
+  - amarok
+  - zsh
+  - tilix
+  - mc
+  - python-twisted
+  - vivaldi-stable
+  - slack
+  - ansible
+  - wireguard-tools
+  - nmap
+  - restic
+  - gawk 
+  - make
+  - wget
+  - tar
+  - bzip2
+  - gzip
+  - python3
+  - unzip
+  - perl
+  - patch
+  - diffutils
+  - diffstat
+  - git
+  - cpp
+  - gcc
+  - gcc-c++
+  - glibc-devel
+  - texinfo
+  - chrpath
+  - ccache
+  - perl-Data-Dumper
+  - perl-Text-ParseWords
+  - perl-Thread-Queue
+  - perl-bignum
+  - socat
+  - python3-pexpect
+  - findutils
+  - which
+  - file
+  - cpio
+  - python
+  - python3-pip
+  - xz
+  - python3-GitPython
+  -  python3-jinja2
+  - SDL-devel
+  - xterm
+  - rpcgen
+  - lz4
+  - zstd
+  - moby-engine
+  - docker-compose
+
+# Make sure the following are not pulled in when Recommended by other packages
+exclude-packages:
+  - plasma-discover-offline-updates
+  - plasma-discover-packagekit
+  # Exclude currently broken support for rpm-ostree in Discover
+  - plasma-discover-rpm-ostree
+  - plasma-pk-updates
+
+repos:
+  - fedora-35
+  - fedora-35-updates
+  - vivaldi
+  - rpmfusion-free
+  - rpmfusion-free-updates
+  - rpmfusion-nonfree
+  - rpmfusion-nonfree-updates
+  - slack

@@ -1,0 +1,5 @@
+[cri-o]
+name=cri-o
+stream=1.22
+profiles=
+state=enabled

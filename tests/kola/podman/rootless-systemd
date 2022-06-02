@@ -1,0 +1,76 @@
+#!/bin/bash
+# kola: { "distros": "fcos", "tags": "needs-internet", "platforms": "qemu-unpriv", "timeoutMin": 15 }
+# This script runs a rootless podman container (rootless because it's
+# run as the `core` user) with systemd inside that brings up httpd.
+# It tests that rootless+systemd works. See issue:
+# https://github.com/containers/podman/issues/7441
+#
+# If it gets easy to change the kargs in the future we should try this
+# both on cgroups v1 and cgroups v2.
+#
+# - distros: fcos
+#   - The test is scoped to only FCOS because the `--retry-all-errors`
+#     flag passed to `curl` is not avaiable on RHEL8.
+#     TODO-RHCOS: adapt test to conditionally use the `-retry-all-errors`
+#     flag on only FCOS
+# - tags: needs-internet
+#   - This test builds a container from remote sources.
+#   - This test uses a remote NTP server.
+# - platforms: qemu-unpriv
+#   - If the test works anywhere it should work everywhere.
+# - timeoutMin: 15
+#   - Pulling and building the container can take a long time if a
+#     slow mirror gets chosen.
+
+set -xeuo pipefail
+
+runascoreuserscript='
+#!/bin/bash
+set -euxo pipefail
+
+# build systemd container (runs httpd via systemd)
+# NOTE: we may want to not build this in the future and run
+#       from a common testutils container. See
+#       https://github.com/coreos/coreos-assembler/issues/1645
+cd $(mktemp -d)
+cat <<EOF > Containerfile
+FROM registry.fedoraproject.org/fedora:36
+RUN dnf -y update \
+&& dnf -y install systemd httpd \
+&& dnf clean all \
+&& systemctl enable httpd
+ENTRYPOINT [ "/sbin/init" ]
+EOF
+podman build -t httpd .
+
+# Run systemd container
+# Pass `-t` so systemd will print logs so `podman logs` will work
+podman run -t -d --name httpd --publish 8080:80 httpd
+'
+
+runascoreuser() {
+    # NOTE: If we don't use `| cat` the output won't get copied
+    # to our unit and won't show up in the `systemctl status` output
+    # of the ext test.
+    sudo -u core "$@" | cat
+}
+
+main() {
+
+    # Execute script as the core user to build/run the container
+    echo "$runascoreuserscript" > /tmp/runascoreuserscript
+    chmod +x /tmp/runascoreuserscript
+    runascoreuser /tmp/runascoreuserscript
+
+    sleep 5
+
+    # Try to grab the web page. Retry as it might not be up fully yet.
+    if ! curl --silent --show-error --retry 5 --retry-all-errors http://localhost:8080 >/dev/null; then
+        echo TEST FAILED 1>&2
+        runascoreuser podman logs httpd
+        return 1
+    fi
+}
+
+main
+exit $?
