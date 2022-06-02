@@ -84,11 +84,9 @@ exclude-packages:
   - plasma-pk-updates
 
 repos:
-  - fedora-36
-  - fedora-36-updates
-  - vivaldi
+  - fedora
+  - fedora-updates
   - rpmfusion-free
   - rpmfusion-free-updates
   - rpmfusion-nonfree
   - rpmfusion-nonfree-updates
-  - slack
